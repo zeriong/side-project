@@ -81,3 +81,14 @@ export const isString = (maybe: string | number) => {
 export const returnFalse = () => {
     return false;
 }
+
+export const convertToSecond = (timeString:string) => {
+    const time = String(timeString).split(':').map((time) => parseInt(time));
+
+    if(time.length === 3) {
+        return (time[0] * 3600) + (time[1] * 60) + time[2];
+    }
+    if (time.length === 2) {
+        return (time[0] * 60) + time[1]
+    }
+}

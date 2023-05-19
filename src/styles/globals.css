@@ -1,30 +1,129 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  font-family: Pretendard, 'SUIT', sans-serif;
 }
-
-a {
-  color: inherit;
-  text-decoration: none;
+#__next {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  overflow: auto;
+  background-color: #e8e8e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 * {
-  box-sizing: border-box;
+  box-sizing: inherit;
+}
+code {
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+ul {
+  list-style: none;
+}
+p {
+  margin: 0;
+}
+button:disabled {
+  cursor: default;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.Toastify__toast-container,
+.Toastify__toast {
+  border-radius: 10px;
+}
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+.slick-list{
+  overflow: visible!important;
+  height: 100% !important;
+}
+.slick-track {
+  height: 100% !important;
+}
+.slick-slide {
+  height: 100% !important;
+}
+.slick-slide > div {
+  height: 100% !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/*          반응형 대응           */
+
+@media (max-height: 600px) {
+  .phone-media {
+    padding: 16px 0;
+    height: 40vh;
   }
-  body {
-    color: white;
-    background: black;
+}
+@media (min-height: 601px) {
+  .phone-media {
+    padding: 24px 0;
+    height: 42vh;
+  }
+}
+@media (min-height: 660px) {
+  .phone-media {
+    height: 43vh;
+  }
+}
+@media (min-height: 680px) {
+  .phone-media {
+    height: 44vh;
+  }
+}
+@media (min-height: 703px) {
+  .phone-media {
+    height: 45vh;
+  }
+}
+@media (min-height: 735px) {
+  .phone-media {
+    height: 46vh;
+  }
+}
+@media (min-height: 775px) {
+  .phone-media {
+    height: 48vh;
+  }
+}
+@media (min-height: 782px) {
+  .phone-media {
+    height: 49vh;
+  }
+}
+@media (min-height: 800px) {
+  .phone-media {
+    height: 49vh;
+  }
+}
+@media (min-height: 830px) {
+  .phone-media {
+    height: 50vh;
+  }
+}
+@media (min-height: 920px) {
+  .phone-media {
+    height: 52vh;
+  }
+}
+@media (min-height: 950px) {
+  .phone-media {
+    height: 53vh;
+  }
+}
+@media (max-height: 812px) and (min-width: 450px) {
+  #_frame {
+    transform: translate(0)!important;
+    top: 0;
   }
 }
