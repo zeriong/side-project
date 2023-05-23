@@ -12,7 +12,7 @@ const CategoriesList = () => {
 
   let [categories] = useState({
     item1:[{title: '전체'}],
-    item2: [{title: '경제'}],
+    item2: [{title: 'IT'}],
     item3: [{title: '주식'}],
     item4: [{title: '부동산'}],
     item5: [{title: '투자'}],
@@ -26,7 +26,7 @@ const CategoriesList = () => {
                   key={'cateList'+i}
                   className={({ selected }) =>
                       classNames(
-                          'mr-8 px-22 py-10 text-15 font-[500] rounded-full text-white border',
+                          'mr-8 px-22 py-10 text-15 font-medium rounded-full text-white border tracking-wider',
                           'transition-all duration-300',
                           selected
                               ? 'bg-primary-300 border-transparent'

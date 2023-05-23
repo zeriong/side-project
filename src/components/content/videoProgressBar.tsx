@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 
-export const VideoProgressBar = ({chapterSectionList, playerRef, duration, setCurrentIndex, playStart, currentProgress}: any) => {
+export const VideoProgressBar = ({chapterSectionList, playerRef, duration, setCurrentIndex, playStart, currentProgress, currentIndex}: any) => {
     const rectRef = useRef<SVGRectElement>(null);
     const progressRef = useRef<any>(null);
 
@@ -13,11 +13,16 @@ export const VideoProgressBar = ({chapterSectionList, playerRef, duration, setCu
         const currentChapter = chapterSectionList.filter((e:any)=> {
             if (gauge >= e.sectStart  &&  gauge < e.sectEnd) return true
         });
+        let chapterIdx = currentChapter[0]?.index - 1;
 
         if (rectRef.current) rectRef.current.style.width = `${point}`;
         playerRef.current.seekTo(gauge);
 
-        setCurrentIndex(currentChapter[0].index-1);
+        if (isNaN(chapterIdx)) {
+            chapterIdx = chapterSectionList.length - 1;
+        }
+
+        setCurrentIndex(chapterIdx);
 
         if (playStart && !(playerRef.current.player.isPlaying)) return
         playerRef.current?.getInternalPlayer().playVideo();

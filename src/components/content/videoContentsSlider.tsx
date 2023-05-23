@@ -18,7 +18,6 @@ export const VideoContentsSlider = (
         currentProgress,
     }:
         any) => {
-    const scrollEl = useRef<CustomScroller>(null);
     const slider1 = useRef<Slider>(null);
     const slider2 = useRef<Slider>(null);
     const idxRef = useRef<number>(0);
@@ -120,7 +119,7 @@ export const VideoContentsSlider = (
             if (currentProgress >= e.sectStart && currentProgress < e.sectEnd) return true
         });
 
-        if (isSame[0].index === currentChapter[0]?.index) return
+        if (isSame[0]?.index === currentChapter[0]?.index) return
 
         syncFromYoutubeProgressBar(currentChapter);
 
@@ -144,50 +143,22 @@ export const VideoContentsSlider = (
                     ref={slider1}
                     className='w-full h-full !overflow-visible'
                 >
-                    {currentContents?.chapter?.map((val:any,i:number) => (
-                        <li
-                            key={'content' + i}
-                            className={`relative w-full phone-media mobile-md:h-[400px] transition-all duration-300 rounded-[15px]
-                                    py-24 bg-primary-dark-100 select-none
-                                    ${currentIdx === i ? 'scale-100' : 'scale-90'}`}
-                        >
-                            <CustomScroller ref={scrollEl}>
-                                <div
-                                    className='w-full h-full px-16'
-                                >
-                                    <h1 className='text-center mb-16 font-bold text-17 tracking-[-0.9px]'>
-                                        {val.coverTitle}
-                                    </h1>
-                                    { val.coverImg ? (
-                                        <Image
-                                            src={val.coverImg}
-                                            alt='컨텐츠 커버이미지'
-                                            width={1000}
-                                            height={1000}
-                                            className='w-full mb-16 rounded-[10px]'
-                                            priority
-                                        />
-                                    ) : '' }
-                                    <div className='z-10 tracking-[-0.9px] flex text-14'>
-                                        <div className='text-start text-white'>
-                                            <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(val.coverText)}}/>
-                                            {i === 0 && (
-                                                <div className='flex whitespace-nowrap text-11 justify-end font-thin text-primary-gray-300 mt-6'>
-                                                    <div className='flex items-center'>
-                                                        <p className='mr-5px text-primary-gray-300'>출처:</p>
-                                                        <p className='mr-3px'>{currentContents?.channelTitle}</p>
-                                                    </div>
-                                                    <Link href={'https://www.youtube.com/watch/' + router.query['id']} target={'_blank'} className='font-semibold'>
-                                                        원본영상 보러가기
-                                                    </Link>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </CustomScroller>
-                        </li>
+                    {currentContents?.chapter?.map((chapter:any,i:number) => (
+                        <ContentCover
+                            key={i}
+                            currentContents={currentContents}
+                            i={i}
+                            currentIdx={currentIdx}
+                            chapter={chapter}
+                            routerQuery={router.query['id']}
+                        />
                     ))}
+                    <ContentCover
+                        isAbridged={true}
+                        currentIdx={currentIdx}
+                        i={currentContents.chapter.length}
+                        currentContents={currentContents}
+                    />
                 </Slider>
             </section>
             <section
@@ -207,47 +178,122 @@ export const VideoContentsSlider = (
                     ref={slider2}
                     className='w-full h-[calc(100%-30px)]'
                 > {/* 디테일 */}
-                    {currentContents?.chapter?.map((val:any,i:number) => {
-                        const totalIndex = currentContents.chapter.length;
+                    {currentContents?.chapter?.map((chapter:any,i:number) => {
+                        const totalIndex = currentContents.chapter.length + 1;
                         return (
-                            <div
-                                key={'slider2'+i}
-                                className='h-[calc(100%-30px)] relative'
-                                onMouseUp={onTouchEnd}
+                            <ContentDetailCover
+                                key={i}
+                                i={i}
+                                totalIndex={totalIndex}
+                                chapter={chapter}
+                                currentContents={currentContents}
                                 onTouchEnd={onTouchEnd}
-                            >
-                                <CustomScroller ref={scrollEl}>
-                                    <div className='bg-primary-dark-100 h-[calc(100%-30px)] px-16 border-x border-dashed border-primary-gray-500'>
-                                        <h1 className='text-center mb-16 font-bold text-17 tracking-[-0.9px]'>
-                                            {
-                                                i+1 !== totalIndex ? (
-                                                    <p className='tracking-wider'>
-                                                        상세보기
-                                                    </p>
-                                                ) : (
-                                                    <>
-                                                        <p className='pb-15px text-center border-b border-primary-gray-500 text-primary-gray-400 font-bold tracking-wider'>
-                                                            전체요약
-                                                        </p>
-                                                    </>
-                                                )
-                                            }
-                                        </h1>
-                                        <h1 className='my-8px text-18 text-center'>
-                                            { i+1 == totalIndex && currentContents?.abridgedTitle }
-                                        </h1>
-                                        <div
-                                            dangerouslySetInnerHTML={ i+1 !== totalIndex ?
-                                                ({__html: DOMPurify.sanitize(val.detail?.text)}) :
-                                                ({__html: DOMPurify.sanitize(currentContents?.abridged)}) }
-                                        />
-                                    </div>
-                                </CustomScroller>
-                            </div>
-                            )}
+                            />
+                        )}
                     )}
+                    <ContentDetailCover
+                        isAbridged={true}
+                        i={currentContents.chapter.length}
+                        totalIndex={currentContents.chapter.length + 1}
+                        currentContents={currentContents}
+                        onTouchEnd={onTouchEnd}
+                    />
                 </Slider>
             </section>
         </>
+    )
+}
+
+const ContentCover = (props: {currentIdx: number, i: number, chapter?: any, currentContents: any, routerQuery?: string[] | undefined | string, isAbridged?: boolean}) => {
+    return (
+        <li
+            className={`relative w-full phone-media mobile-md:h-[400px] transition-all duration-300 rounded-[15px]
+            py-24 bg-primary-dark-100 select-none list-none
+            ${props.currentIdx === props.i ? 'scale-100' : 'scale-90'}`}
+        >
+            <CustomScroller>
+                <div
+                    className='w-full h-full px-16'
+                >
+                    <h1 className='text-center mb-16 font-bold text-17 tracking-[-0.9px]'>
+                        {props.isAbridged ? props.currentContents?.abridgedShort.title : props.chapter?.coverTitle}
+                    </h1>
+                    <Image
+                        src={ props.isAbridged ?
+                            props.currentContents?.abridgedShort.img :
+                            props.chapter?.coverImg }
+                        alt='컨텐츠 커버이미지'
+                        width={1000}
+                        height={1000}
+                        className='w-full mb-16 rounded-[10px]'
+                        priority
+                    />
+                    <div className='z-10 tracking-[-0.9px] flex text-14'>
+                        <div className='text-start text-white'>
+                            <div dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(props.isAbridged ?
+                                    props.currentContents?.abridgedShort.text :
+                                    props.chapter?.coverText)
+                            }}/>
+                            {props.i === 0 && (
+                                <div className='flex whitespace-nowrap text-11 justify-end font-thin text-primary-gray-300 mt-6'>
+                                    <div className='flex items-center'>
+                                        <p className='mr-5px text-primary-gray-300'>출처:</p>
+                                        <p className='mr-3px'>
+                                            {props.currentContents?.channelTitle}
+                                        </p>
+                                    </div>
+                                    <Link href={'https://www.youtube.com/watch/' + props.routerQuery} target={'_blank'} className='font-semibold'>
+                                        원본영상 보러가기
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </CustomScroller>
+        </li>
+    )
+}
+const ContentDetailCover = (props: {i: number, totalIndex: number, currentContents: any, chapter?: any, isAbridged?: boolean, onTouchEnd: any}) => {
+    return (
+        <li
+            className='h-[calc(100%-30px)] relative list-none'
+            onMouseUp={props.onTouchEnd}
+            onTouchEnd={props.onTouchEnd}
+        >
+            <CustomScroller>
+                <div className='bg-primary-dark-100 h-[calc(100%-30px)] px-16 border-x border-dashed border-primary-gray-500'>
+                    <h1 className='text-center mb-16 font-bold text-17 tracking-[-0.9px]'>
+                        {props.isAbridged ? (
+                            <p className='pb-15px text-center border-b border-primary-gray-500 text-white font-bold tracking-wider'>
+                                전체요약
+                            </p>
+                        ) : (
+                            <p className='tracking-wider'>
+                                상세보기
+                            </p>
+                        )}
+                    </h1>
+                    <h1 className='my-8px text-18 text-center'>
+                        { props.isAbridged && props.currentContents?.abridgedTitle }
+                    </h1>
+                    <Image
+                        src={ props.isAbridged ?
+                            props.currentContents?.abridgedImg :
+                            props.chapter?.detail.img }
+                        alt={'디테일이미지'}
+                        width={1000}
+                        height={1000}
+                        className='w-full mb-16 rounded-[10px]'
+                    />
+                    <div
+                        dangerouslySetInnerHTML={ props.isAbridged ?
+                            {__html: DOMPurify.sanitize(props.currentContents?.abridged)} :
+                            {__html: DOMPurify.sanitize(props.chapter?.detail.text)} }
+                    />
+                </div>
+            </CustomScroller>
+        </li>
     )
 }

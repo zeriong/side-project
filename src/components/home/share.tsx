@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
 
 const handleCopyClipBoard = (text: string) => {
     (async () => {
         try {
             await navigator.clipboard.writeText(text);
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) { console.log(e) }
     })()
 }
 

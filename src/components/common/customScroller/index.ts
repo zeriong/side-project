@@ -29,7 +29,7 @@ import {
 
 const raf = require('raf');
 
-interface Props {
+export interface CustomScrollerProps {
     onScroll: Function;
     onScrollFrame: Function;
     onScrollStart: Function;
@@ -55,7 +55,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export default class CustomScroller extends Component<Partial<Props>, any> {
+export default class CustomScroller extends Component<Partial<CustomScrollerProps>, any> {
     public requestFrame: any;
     public view: any;
     public trackHorizontal: any;
@@ -91,7 +91,7 @@ export default class CustomScroller extends Component<Partial<Props>, any> {
         autoHeightMax: 200,
         universal: false,
     };
-    constructor(props: Props, ...rest: any) {
+    constructor(props: CustomScrollerProps, ...rest: any) {
         //   @ts-ignore =
         super(props, ...rest);
 
@@ -215,7 +215,7 @@ export default class CustomScroller extends Component<Partial<Props>, any> {
     }
 
     getThumbHorizontalWidth() {
-        const { thumbSize, thumbMinSize } = this.props as Props;
+        const { thumbSize, thumbMinSize } = this.props as CustomScrollerProps;
         const { scrollWidth, clientWidth } = this.view;
         const trackWidth = getInnerWidth(this.trackHorizontal);
         const width = Math.ceil((clientWidth / scrollWidth) * trackWidth);
@@ -225,7 +225,7 @@ export default class CustomScroller extends Component<Partial<Props>, any> {
     }
 
     getThumbVerticalHeight() {
-        const { thumbSize, thumbMinSize } = this.props as Props;
+        const { thumbSize, thumbMinSize } = this.props as CustomScrollerProps;
         const { scrollHeight, clientHeight } = this.view;
         const trackHeight = getInnerHeight(this.trackVertical);
         const height = Math.ceil((clientHeight / scrollHeight) * trackHeight);
@@ -629,7 +629,7 @@ export default class CustomScroller extends Component<Partial<Props>, any> {
             style,
             children,
             ...props
-        } = this.props as Props;
+        } = this.props as CustomScrollerProps;
 
         const { didMountUniversal } = this.state;
 

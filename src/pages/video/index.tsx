@@ -2,13 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import {convertToSecond, getFirebaseData} from "../../libs/common";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
 import {useRouter} from "next/router";
-import Image from 'next/image';
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
-import {useDragUpAndDown} from "../../hook/useDragUpAndDown";
 import Link from "next/link";
 import ReactPlayer from "react-player";
-import CustomScroller from "../../components/common/customScroller";
 import {ArrowBackIcon, ShareIcon, TitleLessIcon, TitleMoreIcon} from "../../components/common/vectors";
 import Share from "../../components/home/share";
 import {OnProgressProps} from "react-player/base";
@@ -43,7 +39,7 @@ const Index = () => {
                             current['thumbnail'] = data.snippet.thumbnails?.medium.url;
                             current['channelId'] = channelData.id;
                             setCurrentContent(current);
-                            setTotalIndex(current.chapter.length);
+                            setTotalIndex(current.chapter.length + 1);
                             setLoading(false);
                         }
                     }
@@ -68,13 +64,10 @@ const Index = () => {
             let start:any = 0;
             let end:any = 0;
 
-            console.log(val.time)
-
             if (idx === totalIndex-1) {
                 start = convertToSecond(val.time);
                 end = duration;
-            }
-            else {
+            } else {
                 start = convertToSecond(val.time);
                 end = convertToSecond(arr[1 + idx]?.time);
             }
@@ -146,6 +139,7 @@ const Index = () => {
                                         playerRef={playerRef}
                                         duration={duration}
                                         setCurrentIndex={setCurrentIndex}
+                                        currentIndex={currentIndex}
                                         playStart={playStart}
                                         currentProgress={currentProgress}
                                     />
