@@ -22,6 +22,7 @@ export const VideoContentsSlider = (
     const slider2 = useRef<Slider>(null);
     const idxRef = useRef<number>(0);
     const indexRef = useRef<number>(0);
+    const timer = useRef<NodeJS.Timer | null>(null);
 
     const { insertOnTouchStart, insertOnMouseDown, dragStyle } = useDragUpAndDown();
     const router = useRouter();
@@ -59,31 +60,18 @@ export const VideoContentsSlider = (
     };
 
     const followProgress = () => {
-        let timer:any;
-
         slider1.current?.slickGoTo(idxRef.current);
 
         // 프로그레스바 빠르게 누를시 이동하지않는 버그 방지
-        timer = setTimeout(()=>{
-            if (timer) clearTimeout(timer);
-            if (idxRef.current !== indexRef.current+1) {
+        if (timer.current != null) {
+            clearTimeout(timer.current);
+            timer.current = null;
+        }
+        if (timer.current == null) {
+            timer.current = setTimeout(()=> {
                 slider1.current?.slickGoTo(idxRef.current);
-
-                timer = setTimeout(() => {
-                    if (timer) clearTimeout(timer);
-                    if (idxRef.current !== indexRef.current+1) {
-                        slider1.current?.slickGoTo(idxRef.current);
-
-                        timer = setTimeout(() => {
-                            if (timer) clearTimeout(timer);
-                            if (idxRef.current !== indexRef.current+1) {
-                                slider1.current?.slickGoTo(idxRef.current);
-                            }
-                        },500);
-                    }
-                },300);
-            }
-        },100);
+            }, 500);
+        }
     }
 
     const syncFromCloneProgressBar = () => {
@@ -119,7 +107,7 @@ export const VideoContentsSlider = (
             if (currentProgress >= e.sectStart && currentProgress < e.sectEnd) return true
         });
 
-        if (isSame[0]?.index === currentChapter[0]?.index) return
+        if (isSame[0]?.index === currentChapter[0]?.index) return;
 
         syncFromYoutubeProgressBar(currentChapter);
 
@@ -127,8 +115,8 @@ export const VideoContentsSlider = (
 
     useEffect(() => {
         // index변경 없을시 재생reset방지
-        if (changedIdx === currentIdx) return
-        syncFromCloneProgressBar()
+        if (changedIdx === currentIdx) return;
+        syncFromCloneProgressBar();
     }, [isTouchEnd]);
 
     return (

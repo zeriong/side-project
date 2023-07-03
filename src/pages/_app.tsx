@@ -3,6 +3,8 @@ import type { AppProps } from 'next/app'
 import React, {ReactElement, ReactNode} from "react";
 import Head from "next/head";
 import {NextPage} from "next";
+import {Provider} from "react-redux";
+import {store} from "../store";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode;
@@ -16,7 +18,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page) => page);
 
     return (
-        <>
+        <Provider store={store}>
             <Head>
                 <title>영상 핵심내용을 빠르고 쉽게!</title>
                 <meta property='og:title' content='영상 핵심내용을 빠르고 쉽게!'></meta>
@@ -34,6 +36,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                     </>
                 )}
             </div>
-        </>
+        </Provider>
     )
 }
