@@ -1,5 +1,6 @@
 // @ts-nocheck
-import React from 'react';
+import React, {useRef} from 'react';
+import CustomScroller from "./index";
 
 export function renderViewDefault(props) {
     return <div {...props} />;
@@ -32,7 +33,7 @@ export function renderThumbHorizontalDefault({ style, ...props }) {
         ...style,
         cursor: 'pointer',
         borderRadius: 'inherit',
-        backgroundColor: 'rgba(0,0,0,.2)',
+        backgroundColor: 'rgba(127,127,127,0.6)',
     };
     return <div style={finalStyle} {...props} />;
 }
@@ -42,7 +43,8 @@ export function renderThumbVerticalDefault({ style, ...props }) {
         ...style,
         cursor: 'pointer',
         borderRadius: 'inherit',
-        backgroundColor: 'rgba(102,102,102)',
+        backgroundColor: 'rgba(127,127,127,0.6)',
     };
+
     return <div style={finalStyle} {...props} />;
 }

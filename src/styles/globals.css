@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 커스텀스크롤러 CSS */
-.customScrollerInner{
-  -ms-overflow-style: none; /* 인터넷 익스플로러 */
-  scrollbar-width: none;
-}
-.customScrollerInner::-webkit-scrollbar{
-  display:none;
-}
-
 html, body {
   width: 100%;
   height: 100%;
@@ -136,4 +127,13 @@ a {
     transform: translate(0)!important;
     top: 0;
   }
+}
+
+/* 커스텀스크롤러 CSS */
+.customScrollerInner{
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none;
+}
+.customScrollerInner::-webkit-scrollbar{
+  display:none;
 }

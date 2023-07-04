@@ -7,9 +7,6 @@ export const resetSliderIndex = () => {
 export const setSliderIndex = (i: number) => {
     store.dispatch(contentSlice.actions.SET_SLIDER_INDEX(i));
 }
-export const setLoading = (isLoading: boolean) => {
-    store.dispatch(contentSlice.actions.LOADING(isLoading));
-}
 
 interface InitState {
     sliderIndex: number;
@@ -30,9 +27,6 @@ export const contentSlice = createSlice({
         },
         RESET_SLIDER_INDEX: (state: InitState) => {
             state.sliderIndex = 0;
-        },
-        LOADING: (state: InitState, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
         },
     }
 })

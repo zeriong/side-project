@@ -3,22 +3,21 @@ export const containerStyleDefault = {
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    color: 'white'
 };
 
 // Overrides containerStyleDefault properties
 export const containerStyleAutoHeight = {
-    height: 'auto',
+    height: 'auto'
 };
 
 export const viewStyleDefault = {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: '1px',
+    left: '1px',
+    right: '0px',
+    bottom: '0px',
     overflow: 'scroll',
-    WebkitOverflowScrolling: 'touch',
+    WebkitOverflowScrolling: 'touch'
 };
 
 // Overrides viewStyleDefault properties
@@ -27,7 +26,7 @@ export const viewStyleAutoHeight = {
     top: undefined,
     left: undefined,
     right: undefined,
-    bottom: undefined,
+    bottom: undefined
 };
 
 export const viewStyleUniversalInitial = {
@@ -49,19 +48,19 @@ export const trackVerticalStyleDefault = {
 export const thumbHorizontalStyleDefault = {
     position: 'relative',
     display: 'block',
-    height: '100%',
+    height: '100%'
 };
 
 export const thumbVerticalStyleDefault = {
     position: 'relative',
     display: 'block',
-    width: '85%',
+    width: '100%'
 };
 
 export const disableSelectStyle = {
-    userSelect: 'none',
+    userSelect: 'none'
 };
 
 export const disableSelectStyleReset = {
-    userSelect: '',
+    userSelect: ''
 };

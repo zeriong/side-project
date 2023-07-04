@@ -3,23 +3,24 @@ import Link from 'next/link';
 import {useEffect, useRef, useState} from "react";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
 import {getFirebaseData, printElapsedTime} from "../../libs/common";
-import {useSelector} from "react-redux";
-import {RootState} from "../../store";
-import {setLoading} from "../../store/content.slice";
+import {useSearchParams} from "next/navigation";
+
+interface VideoList {
+    id: string;
+    title: string;
+    publishedAt: string;
+    thumbnail: string;
+    channelId: string;
+    channelTitle: string;
+    channelThumbnail: string;
+    free: boolean;
+    category: string;
+}
 
 const MediaList = () => {
-    const [videoList, setVideoList] = useState<{
-        id: string,
-        title: string,
-        publishedAt: string,
-        thumbnail: string,
-        channelId: string,
-        channelTitle: string,
-        channelThumbnail: string,
-        free: boolean,
-        category: string,
-    }[]>([]);
-    const isLoading = useSelector((state: RootState) => state.content.isLoading)
+    const videoList = useRef<VideoList[]>([]);
+    const [currentList, setCurrentList] = useState<VideoList[]>([]);
+    const searchParams = useSearchParams();
 
     // useRef current에 데이터 캐싱 (페이징 추가시 필수)
     const cacheChannelData = useRef<{[key: string]: any}>({});
@@ -31,7 +32,6 @@ const MediaList = () => {
         return cacheChannelData.current[id];
     }
 
-
     const getVideoList = () => {
         (async () => {
             const res = await getFirebaseData(); // 파이어베이스 데이터로드
@@ -41,21 +41,21 @@ const MediaList = () => {
                     if (data) {
                         const channelData: any = await getChannelData(data.snippet.channelId); // current캐싱
                         if (channelData) {
-                            setVideoList((printData) => {
-                                return [...printData, {
-                                    id: data.id,
-                                    title: data.snippet.title,
-                                    publishedAt: data.snippet.publishedAt,
-                                    thumbnail: data.snippet.thumbnails?.medium.url, // data = youtube "video" api
-                                    channelId: data.snippet.channelId,
-                                    channelTitle: data.snippet.channelTitle,
-                                    channelThumbnail: channelData?.snippet.thumbnails.default?.url, // channelData = youtube "channel" api
-                                    free: row.free, // from firebase
-                                    category: row.category, // from firebase
-                                }]
-                            })
-                            setTimeout(() => setLoading(false),60); // 사용자경험 개선
+                            const newData: VideoList = {
+                                id: data.id,
+                                title: data.snippet.title,
+                                publishedAt: data.snippet.publishedAt,
+                                thumbnail: data.snippet.thumbnails?.medium.url, // data = youtube "video" api
+                                channelId: data.snippet.channelId,
+                                channelTitle: data.snippet.channelTitle,
+                                channelThumbnail: channelData?.snippet.thumbnails.default?.url, // channelData = youtube "channel" api
+                                free: row.free, // from firebase
+                                category: row.category, // from firebase
+                            };
+                            setCurrentList((prev: VideoList[]) => [...prev, newData]);
+                            videoList.current.push(newData);
                         }
+
                     }
                 }
             }
@@ -64,20 +64,25 @@ const MediaList = () => {
 
     useEffect(() => {
         // 리스트 중복 업데이트 방지
-        if (!videoList[0]) {
-            setLoading(true);
-            getVideoList();
-        }
+        if (!videoList.current[0]) getVideoList();
     }, []);
 
-    return ( !isLoading &&
+    useEffect(() => {
+        const queryStr = searchParams.get('category');
+        if (queryStr === null) setCurrentList(videoList.current);
+        else {
+            const filter = [...videoList.current].filter(list => list.category === queryStr);
+            setCurrentList(filter);
+        }
+    },[searchParams]);
+
+    return (
         <div className="px-16px">
-            {videoList?.map((val:any, i:number) => {
+            {currentList?.map((val:any, i:number) => {
                 return (
                     <div
                         key={i}
                         className="w-full mb-20 bg-primary-dark-100 rounded-[15px]"
-                        onClick={() => setLoading(true)}
                     >
                         <Link
                             href={{ pathname:'/video', query: { id: `${val.id}`} }}
@@ -102,8 +107,8 @@ const MediaList = () => {
                                             className="mr-6 w-32 h-32 rounded-full"
                                         />
                                         <span className="text-15 font-[500] text-white">
-                                                        {val.channelTitle}
-                                                    </span>
+                                            {val.channelTitle}
+                                        </span>
                                     </div>
                                     <p className="py-5 px-10 text-13 text-white bg-primary-gray-500 rounded-[5px] whitespace-nowrap">
                                         {val.category}
