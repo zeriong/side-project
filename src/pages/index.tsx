@@ -4,8 +4,48 @@ import CustomScroller from "../components/common/customScroller";
 import MediaList from "../components/home/mediaList";
 import {ScrollTopIcon} from "../components/common/vectors";
 import React, {useEffect, useRef, useState} from "react";
+import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import axios from "axios";
+import {getFirebaseData} from "../libs/common";
+import {getYoutubeChannelData, getYoutubeVideoData} from "../libs/youtube";
 
-export default function Home() {
+export interface VideoList {
+    id: string;
+    title: string;
+    publishedAt: string;
+    thumbnail: string;
+    channelId: string;
+    channelTitle: string;
+    channelThumbnail: string;
+    free: boolean;
+    category: string;
+}
+
+export const getServerSideProps: GetServerSideProps<{ data: VideoList[] }> = async () => {
+    const content: VideoList[] = [];
+
+    const res = await getFirebaseData(); // 파이어베이스 데이터로드
+    for (const row of res.data) {
+        const data: any = await getYoutubeVideoData(row.id); // argument = videoId in FB
+        const channelData: any = await getYoutubeChannelData(data.snippet.channelId);
+        const newData = {
+            id: data.id,
+            title: data.snippet.title,
+            publishedAt: data.snippet.publishedAt,
+            thumbnail: data.snippet.thumbnails?.medium.url, // data = youtube "video" api
+            channelId: data.snippet.channelId,
+            channelTitle: data.snippet.channelTitle,
+            channelThumbnail: channelData?.snippet.thumbnails.default?.url, // channelData = youtube "channel" api
+            free: row.free, // from firebase
+            category: row.category, // from firebase
+        }
+        content.push(newData);
+    }
+
+    return { props: { data: content } }
+}
+
+export default function Home({ data } : InferGetServerSidePropsType<typeof getServerSideProps>) {
     const element = useRef<CustomScroller>(null);
 
     return (
@@ -17,7 +57,7 @@ export default function Home() {
             <main className='absolute bottom-0 w-full h-[calc(100%-135px)] overflow-hidden'>
                 <div className="relative w-full h-full">
                     <CustomScroller ref={element}>
-                        <MediaList/>
+                        <MediaList data={data}/>
                         <button
                             type='button'
                             className="fixed bottom-16px right-16px"

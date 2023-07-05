@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import React, {ReactElement, ReactNode} from "react";
+import React, {ReactElement, ReactNode, useEffect} from "react";
 import Head from "next/head";
 import {NextPage} from "next";
 import {Provider} from "react-redux";
@@ -31,9 +31,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
                 max-mobile-md:w-full max-mobile-md:h-full max-mobile-md:p-0 bg-primary-dark-400"
             >
                 {getLayout(
-                    <>
-                        <Component {...pageProps} />
-                    </>
+                    <Component {...pageProps} />
                 )}
             </div>
         </Provider>

@@ -1,71 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {useEffect, useRef, useState} from "react";
-import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
-import {getFirebaseData, printElapsedTime} from "../../libs/common";
 import {useSearchParams} from "next/navigation";
+import {InferGetServerSidePropsType} from "next";
+import {getServerSideProps, VideoList} from "../../pages";
+import {printElapsedTime} from "../../libs/common";
 
-interface VideoList {
-    id: string;
-    title: string;
-    publishedAt: string;
-    thumbnail: string;
-    channelId: string;
-    channelTitle: string;
-    channelThumbnail: string;
-    free: boolean;
-    category: string;
-}
-
-const MediaList = () => {
+const MediaList = ({ data } : InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const videoList = useRef<VideoList[]>([]);
     const [currentList, setCurrentList] = useState<VideoList[]>([]);
     const searchParams = useSearchParams();
-
-    // useRef current에 데이터 캐싱 (페이징 추가시 필수)
-    const cacheChannelData = useRef<{[key: string]: any}>({});
-
-    const getChannelData = async (id: string): Promise<any | undefined> => {
-        if (!cacheChannelData.current[id]) {
-            cacheChannelData.current[id] = await getYoutubeChannelData(id);
-        }
-        return cacheChannelData.current[id];
-    }
-
-    const getVideoList = () => {
-        (async () => {
-            const res = await getFirebaseData(); // 파이어베이스 데이터로드
-            if (res) {
-                for (const row of res.data) {
-                    const data: any = await getYoutubeVideoData(row.id); // argument = videoId in FB
-                    if (data) {
-                        const channelData: any = await getChannelData(data.snippet.channelId); // current캐싱
-                        if (channelData) {
-                            const newData: VideoList = {
-                                id: data.id,
-                                title: data.snippet.title,
-                                publishedAt: data.snippet.publishedAt,
-                                thumbnail: data.snippet.thumbnails?.medium.url, // data = youtube "video" api
-                                channelId: data.snippet.channelId,
-                                channelTitle: data.snippet.channelTitle,
-                                channelThumbnail: channelData?.snippet.thumbnails.default?.url, // channelData = youtube "channel" api
-                                free: row.free, // from firebase
-                                category: row.category, // from firebase
-                            };
-                            setCurrentList((prev: VideoList[]) => [...prev, newData]);
-                            videoList.current.push(newData);
-                        }
-
-                    }
-                }
-            }
-        })()
-    }
-
-    useEffect(() => {
-        // 리스트 중복 업데이트 방지
-        if (!videoList.current[0]) getVideoList();
-    }, []);
 
     useEffect(() => {
         const queryStr = searchParams.get('category');
@@ -76,9 +20,14 @@ const MediaList = () => {
         }
     },[searchParams]);
 
+    useEffect(() => {
+        console.log(data)
+    },[])
+
     return (
         <div className="px-16px">
-            {currentList?.map((val:any, i:number) => {
+            <Link target='_blank' href='https://www.naver.com/' className='fixed bg-white text-black p-20px '>가보자~</Link>
+            {data?.map((val:any, i:number) => {
                 return (
                     <div
                         key={i}

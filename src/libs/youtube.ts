@@ -13,11 +13,8 @@ export const getYoutubeVideoData = async (channelId: string): Promise<any | unde
             id: channelId,
         }
     });
-    if (response.data?.items[0]) {
-        return response.data?.items[0];
-    } else {
-        return undefined;
-    }
+    if (response.data?.items[0]) return response.data?.items[0];
+    else return undefined;
 }
 
 export const getYoutubeChannelData = async (channelId: string): Promise<any | undefined> => {
@@ -28,9 +25,6 @@ export const getYoutubeChannelData = async (channelId: string): Promise<any | un
             id: channelId,
         }
     });
-    if (response.data?.items[0]) {
-        return response.data?.items[0];
-    } else {
-        return undefined
-    }
+    if (response.data?.items[0]) return response.data?.items[0];
+    else return undefined;
 }

@@ -26,18 +26,6 @@ export const printElapsedTime = (date: string | Date) => {
     return '방금 전';
 }
 
-/** firebase-data, mvp까지만 적용하기 때문에 common에 분류 */
-export const getFirebaseData = async (): Promise<any | undefined> => {
-    const response = await axios.get(
-        "https://learncha-6e76b-default-rtdb.asia-southeast1.firebasedatabase.app/youtube.json"
-    );
-    if (response.data) {
-        return response;
-    } else {
-        return undefined;
-    }
-}
-
 /** 커스텀스크롤 function */
 export const getInnerHeight = (el: HTMLDivElement) => {
     const { clientHeight } = el;
@@ -80,6 +68,13 @@ export const isString = (maybe: string | number) => {
 
 export const returnFalse = () => {
     return false;
+}
+
+export const getFirebaseData = async (): Promise<undefined | any> => {
+    const FB_DB = String(process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL);
+    const response = await axios.get(FB_DB);
+    if (response.data) return response;
+    else return undefined;
 }
 
 export const convertToSecond = (timeString:string) => {

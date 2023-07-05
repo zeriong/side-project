@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {convertToSecond, getFirebaseData} from "../../libs/common";
-import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
 import {useRouter} from "next/router";
 import "slick-carousel/slick/slick.css";
 import Link from "next/link";
@@ -12,6 +11,13 @@ import {VideoProgressBar} from "../../components/content/videoProgressBar";
 import {VideoContentsSlider} from "../../components/content/videoContentsSlider";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
+import {GetServerSideProps} from "next";
+import {VideoList} from "../index";
+import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
+
+export const getServerSideProps: GetServerSideProps<{ data: string }> = async () => {
+    return { props: { data: 'ㅇ' } }
+}
 
 const Index = () => {
     const router = useRouter();
