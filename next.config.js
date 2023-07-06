@@ -4,6 +4,8 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
   images: {
+    loader: 'imgix',
+    path: '/',
     domains: ['*','firebasestorage.googleapis.com'],
     remotePatterns: [
       {
