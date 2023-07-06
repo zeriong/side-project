@@ -7,8 +7,8 @@ import {getServerSideProps, VideoList} from "../../pages";
 import {printElapsedTime} from "../../libs/common";
 
 const MediaList = ({ data } : InferGetServerSidePropsType<typeof getServerSideProps>) => {
-    const videoList = useRef<VideoList[]>([]);
-    const [currentList, setCurrentList] = useState<VideoList[]>([]);
+    const videoList = useRef<VideoList[]>(data);
+    const [currentList, setCurrentList] = useState<VideoList[]>(data);
     const searchParams = useSearchParams();
 
     useEffect(() => {
@@ -18,16 +18,12 @@ const MediaList = ({ data } : InferGetServerSidePropsType<typeof getServerSidePr
             const filter = [...videoList.current].filter(list => list.category === queryStr);
             setCurrentList(filter);
         }
+        console.log('sdfsd')
     },[searchParams]);
-
-    useEffect(() => {
-        console.log(data)
-    },[])
 
     return (
         <div className="px-16px">
-            <Link target='_blank' href='https://www.naver.com/' className='fixed bg-white text-black p-20px '>가보자~</Link>
-            {data?.map((val:any, i:number) => {
+            {currentList?.map((val:any, i:number) => {
                 return (
                     <div
                         key={i}

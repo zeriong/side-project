@@ -18,10 +18,7 @@ export const printElapsedTime = (date: string | Date) => {
 
     for (const value of times) {
         const betweenTime = Math.floor(diff / value.milliSeconds);
-
-        if (betweenTime > 0) {
-            return `${betweenTime}${value.name} 전`;
-        }
+        if (betweenTime > 0) return `${betweenTime}${value.name} 전`;
     }
     return '방금 전';
 }
@@ -56,19 +53,12 @@ export const getScrollbarWidth = (cacheEnabled = true) => {
         document.body.appendChild(div);
         scrollbarWidth = div.offsetWidth - div.clientWidth;
         document.body.removeChild(div);
-    } else {
-        scrollbarWidth = 0;
-    }
+    } else scrollbarWidth = 0;
     return scrollbarWidth || 0;
 }
 
-export const isString = (maybe: string | number) => {
-    return typeof maybe === 'string';
-}
-
-export const returnFalse = () => {
-    return false;
-}
+export const isString = (maybe: string | number) => typeof maybe === 'string';
+export const returnFalse = () => false;
 
 export const getFirebaseData = async (): Promise<undefined | any> => {
     const FB_DB = String(process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL);
@@ -87,3 +77,13 @@ export const convertToSecond = (timeString:string) => {
         return (time[0] * 60) + time[1]
     }
 }
+
+// "PT7M24S"와 같은 ISO 8601형식의 신간을 바꿀때 사용
+export const durationToSeconds = (duration: any) => {
+    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    const hours = match[1] ? parseInt(match[1], 10) : 0;
+    const minutes = match[2] ? parseInt(match[2], 10) : 0;
+    const seconds = match[3] ? parseInt(match[3], 10) : 0;
+
+    return hours * 3600 + minutes * 60 + seconds;
+};

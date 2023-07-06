@@ -1,6 +1,7 @@
 import React, {useRef} from 'react';
+import {setSliderIndex} from "../../store/content.slice";
 
-export const VideoProgressBar = ({chapterSectionList, playerRef, duration, setCurrentIndex, playStart, currentProgress, currentIndex}: any) => {
+export const VideoProgressBar = ({chapterSectionList, playerRef, duration, playStart, currentProgress}: any) => {
     const rectRef = useRef<SVGRectElement>(null);
     const progressRef = useRef<any>(null);
 
@@ -8,23 +9,24 @@ export const VideoProgressBar = ({chapterSectionList, playerRef, duration, setCu
         const barWidth = progressRef.current?.offsetWidth;
         const leftWidth = barWidth - (e.nativeEvent as MouseEvent).offsetX;
         const point = barWidth - leftWidth;
-        const gauge:number = (point / barWidth) * duration;
+        const gauge: number = (point / barWidth) * duration;
 
         const currentChapter = chapterSectionList.filter((e:any)=> {
             if (gauge >= e.sectStart  &&  gauge < e.sectEnd) return true
         });
+
         let chapterIdx = currentChapter[0]?.index - 1;
 
         if (rectRef.current) rectRef.current.style.width = `${point}`;
+
         playerRef.current.seekTo(gauge);
 
-        if (isNaN(chapterIdx)) {
-            chapterIdx = chapterSectionList.length - 1;
-        }
+        if (isNaN(chapterIdx)) chapterIdx = chapterSectionList.length - 1;
 
-        setCurrentIndex(chapterIdx);
+        setSliderIndex(chapterIdx);
 
         if (playStart && !(playerRef.current.player.isPlaying)) return
+
         playerRef.current?.getInternalPlayer().playVideo();
     }
 

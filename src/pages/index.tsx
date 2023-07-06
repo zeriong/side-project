@@ -3,9 +3,8 @@ import NavBar from "../components/home/navBar";
 import CustomScroller from "../components/common/customScroller";
 import MediaList from "../components/home/mediaList";
 import {ScrollTopIcon} from "../components/common/vectors";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef} from "react";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import axios from "axios";
 import {getFirebaseData} from "../libs/common";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../libs/youtube";
 

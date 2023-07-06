@@ -4,30 +4,30 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
 import {useDragUpAndDown} from '../../hook/useDragUpAndDown';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import CustomScroller from "../common/customScroller";
+import {store} from "../../store";
+import {setSliderIndex} from "../../store/content.slice";
 
 export const VideoContentsSlider = (
     {
         currentContents,
-        currentIdx,
-        setCurrentIdx,
         chapterSectionList,
         playerRef,
         playStart,
         currentProgress,
-    }:
-        any) => {
+    }: any) => {
+
     const slider1 = useRef<Slider>(null);
     const slider2 = useRef<Slider>(null);
-    const idxRef = useRef<number>(0);
-    const indexRef = useRef<number>(0);
     const timer = useRef<NodeJS.Timer | null>(null);
+
+    const { sliderIndex } = store.getState().content;
 
     const { insertOnTouchStart, insertOnMouseDown, dragStyle } = useDragUpAndDown();
     const router = useRouter();
 
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
+
     const [isTouchEnd, setIsTouchEnd] = useState<boolean>(false);
     const [isSame, setIsSame] = useState<any>([[{index:0}]]);
     const [changedIdx, setChangedIdx] = useState(0);
@@ -40,10 +40,9 @@ export const VideoContentsSlider = (
         arrows: false,
         infinite: false,
         beforeChange: (current:number, next:number) => {
-            setCurrentIdx(next);
-            setCurrentIndex(current);
+            setSliderIndex(next);
             slider2.current?.slickGoTo(next);
-            slider1.current?.slickGoTo(currentIdx);
+            slider1.current?.slickGoTo(sliderIndex);
         },
     };
     const sliderSettings2 = {
@@ -53,14 +52,13 @@ export const VideoContentsSlider = (
         slidesToScroll: 1,
         arrows: false,
         infinite: false,
-        beforeChange:  (current:number, next:number) => {
-            setCurrentIdx(next);
+        beforeChange:  (_:number, next:number) => {
             slider1.current?.slickGoTo(next);
         },
     };
 
     const followProgress = () => {
-        slider1.current?.slickGoTo(idxRef.current);
+        slider1.current?.slickGoTo(sliderIndex);
 
         // 프로그레스바 빠르게 누를시 이동하지않는 버그 방지
         if (timer.current != null) {
@@ -69,19 +67,19 @@ export const VideoContentsSlider = (
         }
         if (timer.current == null) {
             timer.current = setTimeout(()=> {
-                slider1.current?.slickGoTo(idxRef.current);
+                slider1.current?.slickGoTo(sliderIndex);
             }, 500);
         }
     }
 
     const syncFromCloneProgressBar = () => {
         const currentChapter = chapterSectionList.filter((e:any) => {
-            if (currentIdx+1 === e.index) return true
+            if (sliderIndex + 1 === e.index) return true
         });
 
-        if (currentIdx !== chapterSectionList.length) {
+        if (sliderIndex !== chapterSectionList.length) {
             playerRef.current?.seekTo(currentChapter[0]?.sectStart);
-            setChangedIdx(currentIdx);
+            setChangedIdx(sliderIndex);
         }
 
         // 가장처음 유튜브재생안하고 챕터넘길시 무한로딩버그방지
@@ -96,11 +94,7 @@ export const VideoContentsSlider = (
 
     const onTouchEnd = () => setIsTouchEnd(!isTouchEnd);
 
-    useEffect(()=>{
-        indexRef.current = currentIndex;
-        idxRef.current = currentIdx;
-        followProgress();
-    },[currentIdx]);
+    useEffect(()=> followProgress() ,[sliderIndex]);
 
     useEffect(()=> {
         const currentChapter = chapterSectionList.filter((e:any) => {
@@ -115,7 +109,7 @@ export const VideoContentsSlider = (
 
     useEffect(() => {
         // index변경 없을시 재생reset방지
-        if (changedIdx === currentIdx) return;
+        if (changedIdx === sliderIndex) return;
         syncFromCloneProgressBar();
     }, [isTouchEnd]);
 
@@ -136,14 +130,14 @@ export const VideoContentsSlider = (
                             key={i}
                             currentContents={currentContents}
                             i={i}
-                            currentIdx={currentIdx}
+                            currentIdx={sliderIndex}
                             chapter={chapter}
                             routerQuery={router.query['id']}
                         />
                     ))}
                     <ContentCover
                         isAbridged={true}
-                        currentIdx={currentIdx}
+                        currentIdx={sliderIndex}
                         i={currentContents.chapter.length}
                         currentContents={currentContents}
                     />
