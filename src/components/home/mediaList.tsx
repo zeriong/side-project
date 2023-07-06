@@ -18,7 +18,6 @@ const MediaList = ({ data } : InferGetServerSidePropsType<typeof getServerSidePr
             const filter = [...videoList.current].filter(list => list.category === queryStr);
             setCurrentList(filter);
         }
-        console.log('sdfsd')
     },[searchParams]);
 
     return (

@@ -3,7 +3,7 @@ import NavBar from "../components/home/navBar";
 import CustomScroller from "../components/common/customScroller";
 import MediaList from "../components/home/mediaList";
 import {ScrollTopIcon} from "../components/common/vectors";
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {getFirebaseData} from "../libs/common";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../libs/youtube";
@@ -21,27 +21,27 @@ export interface VideoList {
 }
 
 export const getServerSideProps: GetServerSideProps<{ data: VideoList[] }> = async () => {
-    const content: VideoList[] = [];
+    const data: VideoList[] = [];
 
     const res = await getFirebaseData(); // 파이어베이스 데이터로드
     for (const row of res.data) {
-        const data: any = await getYoutubeVideoData(row.id); // argument = videoId in FB
-        const channelData: any = await getYoutubeChannelData(data.snippet.channelId);
+        const youtube: any = await getYoutubeVideoData(row.id); // argument = videoId in FB
+        const channelData: any = await getYoutubeChannelData(youtube.snippet.channelId);
         const newData = {
-            id: data.id,
-            title: data.snippet.title,
-            publishedAt: data.snippet.publishedAt,
-            thumbnail: data.snippet.thumbnails?.medium.url, // data = youtube "video" api
-            channelId: data.snippet.channelId,
-            channelTitle: data.snippet.channelTitle,
+            id: youtube.id,
+            title: youtube.snippet.title,
+            publishedAt: youtube.snippet.publishedAt,
+            thumbnail: youtube.snippet.thumbnails?.medium.url, // data = youtube "video" api
+            channelId: youtube.snippet.channelId,
+            channelTitle: youtube.snippet.channelTitle,
             channelThumbnail: channelData?.snippet.thumbnails.default?.url, // channelData = youtube "channel" api
             free: row.free, // from firebase
             category: row.category, // from firebase
         }
-        content.push(newData);
+        data.push(newData);
     }
 
-    return { props: { data: content } }
+    return { props: { data } }
 }
 
 export default function Home({ data } : InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -55,7 +55,7 @@ export default function Home({ data } : InferGetServerSidePropsType<typeof getSe
             </header>
             <main className='absolute bottom-0 w-full h-[calc(100%-135px)] overflow-hidden'>
                 <div className="relative w-full h-full">
-                    <CustomScroller ref={element}>
+                    <CustomScroller ref={element} universal={true}>
                         <MediaList data={data}/>
                         <button
                             type='button'

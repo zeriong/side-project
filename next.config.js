@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/side-project',
   reactStrictMode: false,
   swcMinify: true,
   images: {

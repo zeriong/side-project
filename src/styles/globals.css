@@ -37,10 +37,6 @@ a {
   text-decoration: none;
   color: inherit;
 }
-.Toastify__toast-container,
-.Toastify__toast {
-  border-radius: 10px;
-}
 .scroll-hidden::-webkit-scrollbar {
   display: none;
 }
