@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
-  basePath: '/side-project',
-  reactStrictMode: false,
+  reactStrictMode: true,
   swcMinify: true,
   images: {
-    loader: 'imgix',
-    path: '/',
     domains: ['*','firebasestorage.googleapis.com'],
     remotePatterns: [
       {
@@ -14,6 +12,7 @@ const nextConfig = {
       },
     ],
   },
+  trailingSlash: true,
 }
 
 module.exports = nextConfig

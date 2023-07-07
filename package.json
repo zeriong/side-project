@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run build",
-    "deploy": "git subtree push —prefix out origin gh-pages"
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
