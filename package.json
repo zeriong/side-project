@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d out"
+    "lint": "next lint"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -41,5 +39,4 @@
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2"
   },
-  "homepage": "https://zeriong.github.io/side-project"
 }
