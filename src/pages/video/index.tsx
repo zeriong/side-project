@@ -15,7 +15,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import {store} from "../../store";
 
-export const getServerSideProps: GetServerSideProps<{ data: any, sectionList: any, duration: any }> = async (context) => {
+export const getServerSideProps: GetServerSideProps<{ data: any | null, sectionList: any | null, duration: any | null }> = async (context) => {
     const { id } = context.query
     const res = await getFirebaseData();
     const data = await res.data.find((item:any) => item.id === id);
