@@ -20,7 +20,7 @@ export interface VideoList {
     category: string;
 }
 
-export const getServerSideProps: GetServerSideProps<{ data: VideoList[] | null }> = async () => {
+export const getServerSideProps: GetServerSideProps<{ data: VideoList[] }> = async () => {
     const data: VideoList[] = [];
 
     const res = await getFirebaseData(); // 파이어베이스 데이터로드

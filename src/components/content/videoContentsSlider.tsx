@@ -53,6 +53,7 @@ export const VideoContentsSlider = (
         arrows: false,
         infinite: false,
         beforeChange:  (_:number, next:number) => {
+            setSliderIndex(next);
             slider1.current?.slickGoTo(next);
         },
     };
