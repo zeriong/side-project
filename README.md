@@ -1,6 +1,6 @@
 ## 영상 핵심내용을 빠르고 쉽게!
 
-- ### <a href="https://side-project-en0htjhj7-zeriong.vercel.app/" target="_blank">페이지 보러 가기</a>
+- ### [페이지 보러 가기](https://side-project-en0htjhj7-zeriong.vercel.app/)
 
 <br/>
 
