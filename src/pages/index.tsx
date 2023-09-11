@@ -53,6 +53,11 @@ export default function Home({ data, query } : InferGetServerSidePropsType<typeo
         <>
             <Head>
                 <title>{!query?.category ? '영상 핵심내용을 빠르고 쉽게!' : `영상 핵심내용을 빠르고 쉽게! - ${query?.category}`}</title>
+                <meta httpEquiv="Title" content="영상 핵심내용을 빠르고 쉽게!" />
+                <meta name='description' content='유튜브 영상의 핵심내용을 챕터별로 빠르고 쉽게 즐기세요!'/>
+                <meta property='og:title' content='영상 핵심내용을 빠르고 쉽게!'/>
+                <meta property='og:description' content='유튜브 영상의 핵심내용을 챕터별로 빠르고 쉽게 즐기세요!'/>
+                <meta property='og:site_name' content='영상 핵심내용을 빠르고 쉽게!'/>
             </Head>
             <div className='relative w-full h-full overflow-hidden box-border bg-primary-dark-400 '>
                 <header className='w-[375px] max-mobile-md:w-full fixed max-mobile-md:top-0 bg-primary-dark-400 z-10'>

@@ -76,6 +76,8 @@ const Index = ({ data, sectionList, duration } : InferGetServerSidePropsType<typ
         <>
             <Head>
                 <title>{`영상 핵심내용을 빠르고 쉽게! - ${data.title}`}</title>
+                <meta httpEquiv="Title" content={data.title} />
+                <meta name='description' content={data.abridgedShort.text}/>
                 <meta property="og:title" content={data.title}/>
                 <meta property="og:image" content={data.thumbnail}/>
                 <meta property="og:video" content={`https://www.youtube.com/watch?v=${data.id}`}/>
