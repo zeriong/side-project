@@ -3,10 +3,12 @@ import NavBar from "../components/home/navBar";
 import CustomScroller from "../components/common/customScroller";
 import MediaList from "../components/home/mediaList";
 import {ScrollTopIcon} from "../components/common/vectors";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef} from "react";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {getFirebaseData} from "../libs/common";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../libs/youtube";
+import Head from 'next/head';
+import {ParsedUrlQuery} from 'querystring';
 
 export interface VideoList {
     id: string;
@@ -20,11 +22,11 @@ export interface VideoList {
     category: string;
 }
 
-export const getServerSideProps: GetServerSideProps<{ data: VideoList[] }> = async () => {
+export const getServerSideProps: GetServerSideProps<{ data: VideoList[], query?: ParsedUrlQuery }> = async (context) => {
     const data: VideoList[] = [];
-
     const res = await getFirebaseData(); // 파이어베이스 데이터로드
-    for (const row of res.data) {
+
+    for (const row of res) {
         const youtube: any = await getYoutubeVideoData(row.id); // argument = videoId in FB
         const channelData: any = await getYoutubeChannelData(youtube.snippet.channelId);
         const newData = {
@@ -41,35 +43,40 @@ export const getServerSideProps: GetServerSideProps<{ data: VideoList[] }> = asy
         data.push(newData);
     }
 
-    return { props: { data } }
+    return { props: { data, query: context.query } }
 }
 
-export default function Home({ data } : InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({ data, query } : InferGetServerSidePropsType<typeof getServerSideProps>) {
     const element = useRef<CustomScroller>(null);
 
     return (
-        <div className='relative w-full h-full overflow-hidden box-border bg-primary-dark-400 '>
-            <header className='w-[375px] max-mobile-md:w-full fixed max-mobile-md:top-0 bg-primary-dark-400 z-10'>
-                <NavBar />
-                <CategoriesList />
-            </header>
-            <main className='absolute bottom-0 w-full h-[calc(100%-135px)] overflow-hidden'>
-                <div className="relative w-full h-full">
-                    <CustomScroller ref={element} universal={true}>
-                        <MediaList data={data}/>
-                        <button
-                            type='button'
-                            className="fixed bottom-16px right-16px"
-                            onClick={() => {
-                                if (!element.current) return
-                                element.current.scrollTop();
-                            }}
-                        >
-                            <ScrollTopIcon/>
-                        </button>
-                    </CustomScroller>
-                </div>
-            </main>
-        </div>
+        <>
+            <Head>
+                <title>{!query?.category ? '영상 핵심내용을 빠르고 쉽게!' : `영상 핵심내용을 빠르고 쉽게! - ${query?.category}`}</title>
+            </Head>
+            <div className='relative w-full h-full overflow-hidden box-border bg-primary-dark-400 '>
+                <header className='w-[375px] max-mobile-md:w-full fixed max-mobile-md:top-0 bg-primary-dark-400 z-10'>
+                    <NavBar />
+                    <CategoriesList />
+                </header>
+                <main className='absolute bottom-0 w-full h-[calc(100%-135px)] overflow-hidden'>
+                    <div className="relative w-full h-full">
+                        <CustomScroller ref={element} universal={true}>
+                            <MediaList data={data}/>
+                            <button
+                                type='button'
+                                className="fixed bottom-16px right-16px"
+                                onClick={() => {
+                                    if (!element.current) return
+                                    element.current.scrollTop();
+                                }}
+                            >
+                                <ScrollTopIcon/>
+                            </button>
+                        </CustomScroller>
+                    </div>
+                </main>
+            </div>
+        </>
     )
 }

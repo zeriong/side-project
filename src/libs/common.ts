@@ -1,6 +1,7 @@
-import axios from "axios";
 // @ts-ignore
 import css from 'dom-css';
+import {doc, getDoc} from '@firebase/firestore';
+import {dbService} from './firebase';
 
 export const printElapsedTime = (date: string | Date) => {
     const start = new Date(date);
@@ -61,9 +62,9 @@ export const isString = (maybe: string | number) => typeof maybe === 'string';
 export const returnFalse = () => false;
 
 export const getFirebaseData = async (): Promise<undefined | any> => {
-    const FB_DB = String(process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL);
-    const response = await axios.get(FB_DB);
-    if (response.data) return response;
+    const getFireStoreDoc = await getDoc(doc(dbService, 'contents/youtube'));
+    const response = getFireStoreDoc.data();
+    if (response) return response[`${ process.env.NEXT_PUBLIC_EXAMPLE_USER_NAME }`];
     else return undefined;
 }
 

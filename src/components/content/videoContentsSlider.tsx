@@ -194,7 +194,7 @@ const ContentCover = (props: {currentIdx: number, i: number, chapter?: any, curr
             py-24 bg-primary-dark-100 select-none list-none
             ${props.currentIdx === props.i ? 'scale-100' : 'scale-90'}`}
         >
-            <CustomScroller>
+            <CustomScroller universal={true}>
                 <div
                     className='w-full h-full px-16'
                 >
@@ -245,7 +245,7 @@ const ContentDetailCover = (props: {i: number, totalIndex: number, currentConten
             onMouseUp={props.onTouchEnd}
             onTouchEnd={props.onTouchEnd}
         >
-            <CustomScroller>
+            <CustomScroller universal={true}>
                 <div className='bg-primary-dark-100 h-[calc(100%-30px)] px-16 border-x border-dashed border-primary-gray-500'>
                     <h1 className='text-center mb-16 font-bold text-17 tracking-[-0.9px]'>
                         {props.isAbridged ? (

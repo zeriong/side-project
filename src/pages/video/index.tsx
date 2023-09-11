@@ -12,13 +12,12 @@ import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {getYoutubeChannelData, getYoutubeVideoData} from "../../libs/youtube";
 import axios from "axios";
 import Head from "next/head";
-import dynamic from "next/dynamic";
 import {store} from "../../store";
 
 export const getServerSideProps: GetServerSideProps<{ data: any, sectionList: any, duration: any }> = async (context) => {
     const { id } = context.query
     const res = await getFirebaseData();
-    const data = await res.data.find((item:any) => item.id === id);
+    const data = await res.find((item:any) => item.id === id);
     const youtube = await getYoutubeVideoData(data.id);
     const channelData: any = await getYoutubeChannelData(youtube.snippet.channelId);
     data['channelTitle'] = youtube.snippet.channelTitle;
@@ -71,14 +70,16 @@ const Index = ({ data, sectionList, duration } : InferGetServerSidePropsType<typ
     // react-player = ssr 불가능
     useEffect(() => {
        if (typeof window !== 'undefined') setHasWindow(true);
-    }, [])
+    }, []);
 
     return (
         <>
             <Head>
+                <title>{`영상 핵심내용을 빠르고 쉽게! - ${data.title}`}</title>
                 <meta property="og:title" content={data.title}/>
                 <meta property="og:image" content={data.thumbnail}/>
-                <meta property="og:video" content={URL_LINK.current}/>
+                <meta property="og:video" content={`https://www.youtube.com/watch?v=${data.id}`}/>
+                <meta property='og:description' content={data.abridgedShort.text}></meta>
             </Head>
             <div className="relative w-full h-full overflow-hidden">
                 <div className="flex flex-col w-full h-full overflow-hidden">
