@@ -1,6 +1,6 @@
 # 영상 핵심내용을 빠르고 쉽게! 🎬
 
-<img src="https://github.com/zeriong/side-project/assets/115396103/572dd4df-7af0-480f-a3c9-2a02a39d3c4b" alt="projectImg" height="550px"/>
+유튜브 영상 컨텐츠를 챕터별로 자세한 정보와 요약된 정보를 슬라이드형태로 제공하는 프로젝트입니다.
 
 ### 페이지 보러가기 👉 &nbsp; [[ 바로 가기 ]](https://side.zeriong.com)
 
